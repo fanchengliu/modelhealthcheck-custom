@@ -1,0 +1,45 @@
+services:
+  check-cx:
+    image: ${CHECK_CX_IMAGE:-ghcr.io/arron196/modelhealthcheck:latest}
+    container_name: check-cx
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      DATABASE_PROVIDER: postgres
+      DATABASE_URL: postgres://checkcx:checkcx@postgres:5432/checkcx
+    volumes:
+      - check-cx-data:/app/.sisyphus/local-data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: check-cx-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: checkcx
+      POSTGRES_USER: checkcx
+      POSTGRES_PASSWORD: checkcx
+    volumes:
+      - check-cx-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U checkcx -d checkcx"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  check-cx-data:
+  check-cx-postgres-data:
