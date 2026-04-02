@@ -55,6 +55,17 @@
 - 单进程后台轮询与历史写入
 - 安全默认：模型密钥仅保存在数据库，服务端使用 service role key 或当前后端对应的服务端凭据读取
 
+## What's Changed in This Derivative
+
+This maintained derivative focuses on making the project safer to operate, easier to refresh and manage, and more practical for real-world self-hosted use. Compared with the upstream baseline, the main improvements in this repository include:
+
+- Safer group management: deleting a group now defaults to moving related providers back to the ungrouped view instead of deleting them by default.
+- More reliable refresh behavior: dashboard and group refresh flows now propagate through the config-loading layer so manual refresh and bypass-cache requests actually take effect.
+- Better frontend state synchronization: group ordering and visibility updates are reflected more consistently after refreshes and polling changes.
+- Expanded operational tooling: admin, storage, diagnostics, and managed-storage workflows have been extended for easier day-to-day operation.
+- Custom notification capabilities: this derivative adds notification-center and Telegram-based notification / interaction flows tailored for ongoing self-hosted use.
+- Public release cleanup: deployment guidance, attribution, repository presentation, and usage notes have been cleaned up and reorganized for this maintained public release.
+
 ## 快速开始
 
 ### 1. 环境准备
